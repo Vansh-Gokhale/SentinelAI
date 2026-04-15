@@ -52,47 +52,48 @@ If an agent goes rogue, the **Circuit Breaker** auto-freezes it on-chain after 3
 ## 🏗️ Architecture
 
 ```mermaid
-flowchart TB
-    subgraph SOLANA["SOLANA DEVNET"]
-        AP["AgentProfile\n(PDA)"]
-        APo["AgentPolicy\n(PDA)"]
-        SP["System Program\n(CPI Target)"]
-        subgraph PROGRAM["sentinel_ai — Anchor Program"]
-            I1["initialize_agent_profile"]
-            I2["set_policy"]
-            I3["submit_transaction\n(firewall pipeline)"]
-            I4["unfreeze_agent"]
-            E1["TransactionProcessed"]
-            E2["CircuitBreakerTripped"]
-            E3["AgentUnfrozen"]
+graph TB
+    subgraph SOL[SOLANA DEVNET]
+        direction TB
+        AP[AgentProfile PDA]
+        APO[AgentPolicy PDA]
+        SYS[System Program]
+        subgraph PGM[sentinel_ai - Anchor Program]
+            direction LR
+            INIT[initialize_agent_profile]
+            SET[set_policy]
+            SUB[submit_transaction]
+            UNF[unfreeze_agent]
         end
-        AP --- PROGRAM
-        APo --- PROGRAM
-        SP --- PROGRAM
+        AP --> PGM
+        APO --> PGM
+        SYS --> PGM
     end
 
-    subgraph BACKEND["BACKEND — Express / Bun"]
-        B1["POST /execute"]
-        B2["GET /api/resource (x402)"]
-        B3["GET /api/audit"]
-        B4["Firewall Validator"]
-        B5["x402 Router"]
-        B6["PER Provider"]
-        B7["Audit Logger"]
+    subgraph BE[BACKEND - Express / Bun]
+        direction TB
+        EX[POST /execute]
+        RES[GET /api/resource - x402]
+        AUD[GET /api/audit]
+        FW[Firewall Validator]
+        X4[x402 Router]
+        PER[PER Provider]
+        LOG[Audit Logger]
     end
 
-    subgraph FRONTEND["FRONTEND — Next.js + Tailwind"]
-        F1["AgentStatus + BadgeChips"]
-        F2["PolicyForm (6 fields)"]
-        F3["SimulationPanel (6 scenarios)"]
-        F4["ActivityFeed (real-time)"]
-        F5["AuditTrail (SHA-256)"]
-        F6["Wallet Connect"]
+    subgraph FE[FRONTEND - Next.js Dashboard]
+        direction TB
+        AS[AgentStatus + Badges]
+        PF[PolicyForm]
+        SP[SimulationPanel]
+        AF[ActivityFeed]
+        AT[AuditTrail]
+        WC[Wallet Connect]
     end
 
-    BACKEND -->|"invoke instructions"| SOLANA
-    FRONTEND -->|"WebSocket subscribe\n(onAccountChange + onLogs)"| SOLANA
-    FRONTEND -->|"API calls"| BACKEND
+    BE -- invoke instructions --> SOL
+    FE -- WebSocket subscribe --> SOL
+    FE -- API calls --> BE
 ```
 
 ---
