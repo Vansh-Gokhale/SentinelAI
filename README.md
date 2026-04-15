@@ -235,17 +235,6 @@ Open [http://localhost:3000](http://localhost:3000) to access the dashboard.
 
 ---
 
-## 🎯 Hackathon Track Alignment
-
-| Track | How SentinelAI Addresses It |
-|:------|:---------------------------|
-| **Main Colosseum** | Core AI agent infrastructure — on-chain reputation, policy enforcement, circuit breaker |
-| **MagicBlock Privacy** | PER architecture routes transactions through a Trusted Execution Environment for transaction opacity |
-| **x402 Payments** | Full HTTP 402 challenge-response protocol for machine-to-machine agent commerce |
-| **100xDevs** | Clean modular architecture, comprehensive test suite, well-documented codebase |
-
----
-
 ## 🔒 Security Hardening
 
 - **Rust/Anchor**: All math uses `saturating_add` / `saturating_sub` — zero overflow panics
