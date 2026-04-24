@@ -21,9 +21,17 @@ import type { Idl } from '@coral-xyz/anchor';
 import { PublicKey, SystemProgram } from '@solana/web3.js';
 import idl from '@/lib/sentinel_ai_idl.json';
 
-export const PROGRAM_ID = new PublicKey(
-  process.env.NEXT_PUBLIC_PROGRAM_ID || '4ytqEfZTGXUiDo1HXciUFDeTVqGT5AabLLFpTMysJLbH'
-);
+export const PROGRAM_ID = (() => {
+  try {
+    const envVal = process.env.NEXT_PUBLIC_PROGRAM_ID?.trim();
+    if (envVal) {
+      return new PublicKey(envVal);
+    }
+  } catch (err) {
+    console.warn("Invalid NEXT_PUBLIC_PROGRAM_ID, falling back to default.");
+  }
+  return new PublicKey('4ytqEfZTGXUiDo1HXciUFDeTVqGT5AabLLFpTMysJLbH');
+})();
 
 /* ─── PDA derivation helpers ──────────────────────────────────────────── */
 
